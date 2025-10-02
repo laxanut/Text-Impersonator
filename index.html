@@ -44,8 +44,8 @@
     <label>Bot Name</label>
     <input type="text" id="botName" placeholder="Enter bot name">
 
-    <label>Profile Picture</label>
-    <input type="file" id="botAvatar" accept="image/*">
+    <label>Profile Picture (Image URL)</label>
+    <input type="text" id="botAvatarURL" placeholder="https://example.com/avatar.png">
 
     <label>Message</label>
     <textarea id="message" rows="4" placeholder="Enter your message"></textarea>
@@ -54,22 +54,17 @@
   </div>
 
   <script>
-    // 👇 SET YOUR WEBHOOK URL HERE
+    // 👇 Set your webhook URL here
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1423226307172368467/np6785Bko_B3Rl9jjsB1XB1_pGl1ivQJfeXs2nKCxDbP9SYDqwA6TTTYt9spTEE1Ta6K";
 
-    async function sendMessage() {
+    function sendMessage() {
       const botName = document.getElementById("botName").value;
-      const avatarInput = document.getElementById("botAvatar");
+      const avatarURL = document.getElementById("botAvatarURL").value;
       const message = document.getElementById("message").value;
 
       if (!message) {
         alert("Please enter a message.");
         return;
-      }
-
-      let avatarURL = null;
-      if (avatarInput.files[0]) {
-        avatarURL = await uploadImage(avatarInput.files[0]);
       }
 
       const payload = {
@@ -94,14 +89,7 @@
         }
       });
     }
-
-    function uploadImage(file) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(file);
-      });
-    }
   </script>
 </body>
 </html>
+
