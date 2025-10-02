@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Discord Webhook Messenger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #2c2f33;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .card {
+      background: #23272a;
+      padding: 20px;
+      border-radius: 12px;
+      width: 350px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    input, textarea, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background: #5865f2;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #4752c4;
+    }
+  </style>
+</head>
+<body>
+  <h2>Discord Webhook Messenger</h2>
+  <div class="card">
+    <label>Bot Name</label>
+    <input type="text" id="botName" placeholder="Enter bot name">
+
+    <label>Profile Picture</label>
+    <input type="file" id="botAvatar" accept="image/*">
+
+    <label>Message</label>
+    <textarea id="message" rows="4" placeholder="Enter your message"></textarea>
+
+    <button onclick="sendMessage()">Send Message</button>
+  </div>
+
+  <script>
+    // 👇 SET YOUR WEBHOOK URL HERE
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1423226307172368467/np6785Bko_B3Rl9jjsB1XB1_pGl1ivQJfeXs2nKCxDbP9SYDqwA6TTTYt9spTEE1Ta6K";
+
+    async function sendMessage() {
+      const botName = document.getElementById("botName").value;
+      const avatarInput = document.getElementById("botAvatar");
+      const message = document.getElementById("message").value;
+
+      if (!message) {
+        alert("Please enter a message.");
+        return;
+      }
+
+      let avatarURL = null;
+      if (avatarInput.files[0]) {
+        avatarURL = await uploadImage(avatarInput.files[0]);
+      }
+
+      const payload = {
+        username: botName || "Webhook Bot",
+        content: message,
+      };
+
+      if (avatarURL) {
+        payload.avatar_url = avatarURL;
+      }
+
+      fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).then(res => {
+        if (res.ok) {
+          alert("Message sent!");
+          document.getElementById("message").value = "";
+        } else {
+          alert("Failed to send message.");
+        }
+      });
+    }
+
+    function uploadImage(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+    }
+  </script>
+</body>
+</html>
